@@ -55,18 +55,30 @@ app.jinja_env.globals['static'] = (
     lambda filename: url_for('static', filename=filename))
 
 @app.route("/")
-def hello():
+def index():
   return render_template('index.html')
 
-@app.route("/test")
-def test():
-  return "say what"
-
-@app.route('/get/<id>')
+@app.route('/get_guide/<id>')
 @crossdomain(origin='*')
-def get(id):
+def get_guide(id):
   r = requests.get('http://snapguide.com/api/v1/guide/' + id)
   return r.text
+
+@app.route('/get_image/<id>')
+@crossdomain(origin='*')
+def get_image(id):
+  endUrl = 'original.jpg'
+
+  quality = ''
+  if request.args != None:
+    quality = request.args.get('q', '')
+    if quality.lower() == 'medium':
+      endUrl = '300x294_ac.jpg'
+    elif quality.lower() == 'small':
+      endUrl = '60x60_ac.jpg'
+
+  r = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
+  return r.raw.data
 
 if __name__ == "__main__":
     app.debug = True
