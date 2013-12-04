@@ -4,6 +4,8 @@ from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
 import requests
+import base64
+
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
@@ -61,12 +63,20 @@ def index():
 @app.route('/get_guide/<id>')
 @crossdomain(origin='*')
 def get_guide(id):
+  """
+  Method to get a guide from Snapguide, return the data as json string
+  JS will need to parse it first
+  """
   r = requests.get('http://snapguide.com/api/v1/guide/' + id)
   return r.text
 
 @app.route('/get_image/<id>')
 @crossdomain(origin='*')
 def get_image(id):
+  """
+  Method to get an image from a guide by passing the hash id of the image
+  Return the encoded 64 binary data of the image
+  """
   endUrl = 'original.jpg'
 
   quality = ''
@@ -77,8 +87,11 @@ def get_image(id):
     elif quality.lower() == 'small':
       endUrl = '60x60_ac.jpg'
 
-  r = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
-  return r.raw.data
+  resp = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
+  bData = resp.content
+  
+  # JS doesn't like non-encoded binary, so we need to return the encoded one here
+  return base64.b64encode(bData)
 
 if __name__ == "__main__":
     app.debug = True

@@ -21,18 +21,15 @@ What up
 <script type="text/javascript" src="../static/helpers.js"></script>
 <script type="text/javascript">
   /* <![CDATA[ */
-  function hexToBase64(str) {
-      return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
-  }
-
   function getImagesToRender(data) {
     console.log(data);
-    XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0', function(data) {
-      console.log(data);
-      var img = document.createElement('img');
-      img.src = 'data:image/jpeg;base64,' + hexToBase64(data);
-      document.body.appendChild(img);
-    });
+    
+//    XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0?q=small', function(data) {
+//      console.log(data);
+//      var img = document.createElement('img');
+//      img.src = 'data:image/jpeg;base64,' + data;
+//      document.body.appendChild(img);
+//    });
   }
 
   function init(data) {
