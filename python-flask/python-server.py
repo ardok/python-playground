@@ -86,6 +86,8 @@ def get_image(id):
       endUrl = '300x294_ac.jpg'
     elif quality.lower() == 'small':
       endUrl = '60x60_ac.jpg'
+    else:
+      endUrl = quality
 
   resp = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
   bData = resp.content

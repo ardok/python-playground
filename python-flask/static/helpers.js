@@ -16,6 +16,12 @@ var HTTP_VERB = {
   POST: 'POST'
 };
 
+var IMG_QUALITY = {
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  ORIG: 'original'
+};
+
 function log(msg) {
   if (console) console.log(msg);
 }

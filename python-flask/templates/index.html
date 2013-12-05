@@ -9,6 +9,9 @@
 
   <style type="text/css">
     /* <![CDATA[ */
+    .big-img-container {
+      position: absolute;
+    }
     /* ]]> */
   </style>
 </head>
@@ -18,11 +21,48 @@
 </h1>
 What up
 
+<div id="content">
+
+</div>
+
 <script type="text/javascript" src="../static/helpers.js"></script>
+<script type="text/javascript" src="../static/model.js"></script>
+
 <script type="text/javascript">
   /* <![CDATA[ */
-  function getImagesToRender(data) {
-    console.log(data);
+  var KEY_GUIDE = 'guide';
+  var KEY_ITEMS = 'items';
+  var KEY_CONTENT = 'content';
+  var KEY_CAPTION = 'caption';
+  var KEY_TYPE = 'type';
+  var KEY_MEDIA_ITEM = 'media_item_uuid';
+
+  function getGuides(data) {
+    var validDataWithImg = [];
+
+    if (data[KEY_GUIDE] &&
+        data[KEY_GUIDE][KEY_ITEMS]) {
+      for (var key in data[KEY_GUIDE][KEY_ITEMS]) {
+        var value = data[KEY_GUIDE][KEY_ITEMS][key];
+        if (value[KEY_CONTENT] &&
+            value[KEY_CONTENT][KEY_MEDIA_ITEM]) {
+          var dataToPush = value[KEY_CONTENT];
+          dataToPush[KEY_TYPE] = value[KEY_TYPE];
+          validDataWithImg.push(dataToPush);
+        }
+      }
+    }
+
+    var guides = [];
+
+    for (var key in validDataWithImg) {
+      var value = validDataWithImg[key]; // contains `caption` & `media_item_uuid`
+//      XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0?q=small', function(data) {
+//      });
+      guides.push(new Guide(value[KEY_MEDIA_ITEM], value[KEY_CAPTION]));
+    }
+
+    return guides;
     
 //    XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0?q=small', function(data) {
 //      console.log(data);
@@ -33,7 +73,11 @@ What up
   }
 
   function init(data) {
-    getImagesToRender(JSON.parse(data));
+    var guides = getGuides(JSON.parse(data));
+
+    for (var key in guides) {
+      guides[key].loadImage(document.getElementById('content'), IMG_QUALITY.SMALL);
+    }
   }
 
   // get our data
