@@ -78,7 +78,7 @@ GuideController.prototype = {
       clearSelectedGuide();
 
       // assign selected class to the current element
-      addClass(document.getElementById(guide.mediaId), CLASS_NAME.SELECTED_THUMBNAIL);
+      W(document.getElementById(guide.mediaId)).addClass(CLASS_NAME.SELECTED_THUMBNAIL);
 
       // create the big container
       var container = document.createElement('div');
