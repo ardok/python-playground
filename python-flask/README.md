@@ -24,5 +24,5 @@ What this sample app does:
 3.  For each of data with image metadata in it, create a model of our own
 4.  For each model, fetch the actual image from Snapguide (hence the thumbnail view)
 5.  On thumbnail image click, fetch the bigger image from Snapguide and save its binary data into our model (for faster navigation later). Then show the big image with `Prev` and `Next` button
-6.  Each Guide model has `caption` stored in it, but I don't use it in this sample app
+6.  Each Guide model has `caption` stored in it. The caption is assigned on thumbnail title.
 7.  It's also quite responsive :smile:

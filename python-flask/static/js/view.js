@@ -31,8 +31,15 @@ function GuideThumbnailsView(appendTarget) {
 }
 
 GuideThumbnailsView.prototype = {
-  draw: function(img, data) {
-    img.src = 'data:image/jpeg;base64,' + data;
+  draw: function(img, data, guide) {
+    if (img) {
+      if (data) img.src = 'data:image/jpeg;base64,' + data;
+      if (guide) {
+        if (guide.mediaId) img.id = guide.mediaId;
+        img.className = CLASS_NAME.IMG_THUMBNAIL;
+        if (guide.caption) img.title = guide.caption;
+      }
+    }
   }
 };
 

@@ -34,14 +34,12 @@ GuideController.prototype = {
         (function(curElem) {
           if (curElem.mediaId) {
             var img = document.createElement('img');
-            img.id = curElem.mediaId;
-            img.className = CLASS_NAME.IMG_THUMBNAIL;
             img.src = '../static/img/60x60.gif';
 
             if (appendTarget) appendTarget.appendChild(img);
 
             XMLHttp.get('http://localhost:5000/get_image/' + curElem.mediaId + '?q=' + IMG_QUALITY.SMALL, function(data) {
-              _this.thumbnailsView.draw(img, data);
+              _this.thumbnailsView.draw(img, data, curElem);
               img.onclick = function() {
                 /**
                  * On click, show the big image step
@@ -90,6 +88,7 @@ GuideController.prototype = {
       var bigImg = document.createElement('img');
       bigImg.src = 'data:image/jpeg;base64,' + bigData;
       bigImg.className = 'big-img';
+      if (guide.caption) bigImg.title = guide.caption;
 
       // create prev navigation
       var leftNavContainer = null;
@@ -140,7 +139,8 @@ GuideController.prototype = {
       });
 
     };
-    
+
+    // use the stored binary data if exists
     if (guide.stepImgBinaryData != null) {
       showImageStep(guide.stepImgBinaryData);
     } else {
