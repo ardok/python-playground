@@ -1,50 +1,28 @@
-/**
-Source: http://davidwalsh.name/css-flip
-**/
-
-/* entire container, keeps perspective */
-.flip-container {
-  perspective: 1000;
+/** Thumbnail hover animation */
+.img-thumbnail {
+  -webkit-transition: all .2s ease-in-out;
 }
 
-/* flip the pane when hovered */
-.flip-container:hover .flipper, .flip-container.hover .flipper {
-  transform: rotateY(180deg);
+.img-thumbnail:hover {
+  -webkit-transform: scale(1.2);
 }
 
-.flip-container, .front, .back {
-  width: 320px;
-  height: 480px;
+/** Guide step close animation */
+@-webkit-keyframes goneLeftRight {
+  0% {
+    margin-left: 0;
+  }
+  33% {
+    margin-left: -8%;
+  }
+  66% {
+    margin-left: 80%;
+  }
+  100% {
+    margin-left: 120%;
+  }
 }
 
-/* flip speed goes here */
-.flipper {
-  transition: 0.6s;
-  transform-style: preserve-3d;
-
-  position: relative;
-}
-
-/* hide back of pane during swap */
-.front, .back {
-  backface-visibility: hidden;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* front pane, placed above back */
-.front {
-  z-index: 2;
-}
-
-/* back, initially hidden pane */
-.back {
-  transform: rotateY(180deg);
-}
-
-/* for flip toggle */
-.flip-container:hover .flipper, .flip-container.hover .flipper, .flip-container.flip .flipper {
-  transform: rotateY(180deg);
+.big-img-container.goneLeftRight {
+  -webkit-animation: goneLeftRight 0.75s linear;
 }

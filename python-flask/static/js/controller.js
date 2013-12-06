@@ -3,12 +3,107 @@
  * @param guides all the guides (steps)
  * @constructor
  */
-function GuideController(guides) {
+function GuideController(guides, thumbnailsView, stepView) {
   this.guides = guides;
   this.currentGuideIndex = -1;
+  this.thumbnailsView = thumbnailsView;
+  this.stepView = stepView;
 }
 
 GuideController.prototype = {
+  initWithThumbnailsView: function() {
+    var _this = this;
+
+    if (this.guides &&
+        this.thumbnailsView &&
+        this.thumbnailsView.appendTarget) {
+
+      var appendTarget = this.thumbnailsView.appendTarget;
+
+      for (var i = 0, len = this.guides.length; i < len; i++) {
+        (function(curElem) {
+          if (curElem.mediaId) {
+//            var img = document.createElement('img');
+//            img.id = curElem.mediaId;
+//            img.className = CLASS_NAME.IMG_THUMBNAIL;
+//            img.src = '../static/img/60x60.gif';
+//
+//            if (appendTarget) appendTarget.appendChild(img);
+//
+//            XMLHttp.get('http://localhost:5000/get_image/' + curElem.mediaId + '?q=' + IMG_QUALITY.SMALL, function(data) {
+//              _this.thumbnailsView.draw(img, data);
+//              img.onclick = function() {
+//                /**
+//                 * On click, show the big image step
+//                 */
+//                _this.currentGuideIndex = curElem.arrayIndex;
+//                _this.loadImageStep(curElem);
+//              };
+//            });
+
+//            var imgPlaceholder = document.createElement('img');
+//            imgPlaceholder.src = '../static/img/60x60.gif';
+//
+//            var flipContainer = document.createElement('span');
+//            flipContainer.className = 'flip-container';
+//
+//            appendTarget.appendChild(flipContainer);
+//
+//            appendTo(flipContainer,
+//              '<span class="flipper">' +
+//                '<span class="front">' +
+//                '</span>' +
+//                '<span class="back">' +
+//                '</span>' +
+//              '</span>'
+//            );
+
+//            var flipContainer = document.createElement('div');
+//            flipContainer.className = 'flip-container';
+//
+//            appendTarget.appendChild(flipContainer);
+//
+//            appendTo(flipContainer,
+//              '<div class="flipper">' +
+//                '<div class="front">' +
+//                '</div>' +
+//                '<div class="back">' +
+//                '</div>' +
+//              '</div>'
+//            );
+
+//            flipContainer.getElementsByClassName('front')[0].appendChild(imgPlaceholder);
+
+//            if (appendTarget) appendTarget.appendChild(flipContainer);
+
+            var img = document.createElement('img');
+            img.id = curElem.mediaId;
+            img.className = CLASS_NAME.IMG_THUMBNAIL;
+            img.src = '../static/img/60x60.gif';
+
+            if (appendTarget) appendTarget.appendChild(img);
+
+            XMLHttp.get('http://localhost:5000/get_image/' + curElem.mediaId + '?q=' + IMG_QUALITY.SMALL, function(data) {
+//              var img = document.createElement('img');
+//              img.id = curElem.mediaId;
+//              img.className = CLASS_NAME.IMG_THUMBNAIL;
+              _this.thumbnailsView.draw(img, data);
+              img.onclick = function() {
+                /**
+                 * On click, show the big image step
+                 */
+                _this.currentGuideIndex = curElem.arrayIndex;
+                _this.loadImageStep(curElem);
+              };
+            });
+
+          }
+        })(this.guides[i]);
+
+      }
+    }
+  },
+
   /**
    * Load an image thumbnail
    * @param guide the guide
@@ -17,17 +112,15 @@ GuideController.prototype = {
   loadImageThumbnail: function(guide, appendTarget) {
     var _this = this;
     if (guide.mediaId) {
-      var img = document.createElement('img');
-      img.id = guide.mediaId;
-      img.className = CLASS_NAME.IMG_THUMBNAIL;
-      img.src = '../static/img/60x60.gif';
+      var imgPlaceholder = document.createElement('img');
+      imgPlaceholder.src = '../static/img/60x60.gif';
       
-      var spanContainer = document.createElement('span');
-      spanContainer.className = 'flip-container';
+      var flipContainer = document.createElement('span');
+      flipContainer.className = 'flip-container';
       
-      appendTo(appendTarget, spanContainer);
-      
-      appendTo(spanContainer,
+      appendTo(appendTarget, flipContainer);
+
+      appendTo(flipContainer,
         '<span class="flipper">' +
           '<span class="front">' +
           '</span>' +
@@ -35,32 +128,28 @@ GuideController.prototype = {
           '</span>' +
         '</span>'
       );
+
+      appendTo(flipContainer.getElementsByClassName('front')[0],
+        imgPlaceholder
+      );
       
-      appendTo();
-      
-//      if (appendTarget) {
-//        appendTo(appendTarget,
-//          '<div class="flip-container">' +
-//            '<div class="flipper">' +
-//              '<div class="front">' +
-//              '</div>' +
-//              '<div class="back">' +
-//              '</div>' +
-//            '</div>' +
-//          '</div>'
-//        );
-//      }
+      if (appendTarget) {
+        appendTo(appendTarget, flipContainer);
+      }
       
 //      if (appendTarget) appendTarget.appendChild(img);
             
       XMLHttp.get('http://localhost:5000/get_image/' + guide.mediaId + '?q=' + IMG_QUALITY.SMALL, function(data) {
+        var img = document.createElement('img');
+        img.id = guide.mediaId;
+        img.className = CLASS_NAME.IMG_THUMBNAIL;
         img.src = 'data:image/jpeg;base64,' + data;
         img.onclick = function() {
           /**
            * On click, show the big image step
            */
           _this.currentGuideIndex = guide.arrayIndex;
-          new GuideView(_this.guides, guide, _this);
+          _this.loadImageStep(guide);
         };
       });
     }
@@ -71,6 +160,10 @@ GuideController.prototype = {
    * @param guide the guide to load
    */
   loadImageStep: function(guide) {
+
+    if (!guide &&
+        !this.stepView) return;
+
     var _this = this;
     showThrobber();
     
@@ -94,55 +187,52 @@ GuideController.prototype = {
       bigImg.className = 'big-img';
 
       // create prev navigation
-      var leftNavContainer = document.createElement('span');
-      leftNavContainer.className = 'left-nav-container';
-      var leftNavArrow = document.createElement('a');
-      leftNavArrow.className = 'left-nav-arrow';
-      leftNavArrow.href = 'javascript:void("prev");';
-      leftNavArrow.onclick = function() {
-        _this.goToPrevIndex();
-      };
-      leftNavArrow.innerText = 'Prev';
-      leftNavContainer.appendChild(leftNavArrow);
+      var leftNavContainer = null;
+      if (guide.arrayIndex != 0) {
+        leftNavContainer = document.createElement('span');
+        leftNavContainer.className = 'left-nav-container';
+        var leftNavArrow = document.createElement('a');
+        leftNavArrow.className = 'left-nav-arrow';
+        leftNavArrow.href = 'javascript:void("prev");';
+        leftNavArrow.onclick = function() {
+          _this.goToPrevIndex();
+        };
+        leftNavArrow.innerText = 'Prev';
+        leftNavContainer.appendChild(leftNavArrow);
+      }
 
       // create next navigation
-      var rightNavContainer = document.createElement('span');
-      rightNavContainer.className = 'right-nav-container';
-      var rightNavArrow = document.createElement('a');
-      rightNavArrow.className = 'right-nav-arrow';
-      rightNavArrow.href = 'javascript:void("next");';
-      rightNavArrow.onclick = function() {
-        _this.goToNextIndex();
-      };
-      rightNavArrow.innerText = 'Next';
-      rightNavContainer.appendChild(rightNavArrow);
+      var rightNavContainer = null;
+      if (guide.arrayIndex != _this.guides.length - 1) {
+        rightNavContainer = document.createElement('span');
+        rightNavContainer.className = 'right-nav-container';
+        var rightNavArrow = document.createElement('a');
+        rightNavArrow.className = 'right-nav-arrow';
+        rightNavArrow.href = 'javascript:void("next");';
+        rightNavArrow.onclick = function() {
+          _this.goToNextIndex();
+        };
+        rightNavArrow.innerText = 'Next';
+        rightNavContainer.appendChild(rightNavArrow);
+      }
 
       // create close button
       var closeBtn = document.createElement('a');
       closeBtn.className = 'close-btn';
       closeBtn.innerHTML = '&times;';
       closeBtn.href = 'javascript:void("close");';
-      closeBtn.onclick = closeCurrentGuide;
+      closeBtn.onclick = function() {
+        closeCurrentGuide(true);
+      };
 
-      // append all the elements to the big container
-      container.appendChild(closeBtn);
-      container.appendChild(leftNavContainer);
-      container.appendChild(bigImg);
-      container.appendChild(rightNavContainer);
+      _this.stepView.draw({
+        'mainContainer': container,
+        'closeBtn': closeBtn,
+        'leftNavContainer': leftNavContainer,
+        'bigImg': bigImg,
+        'rightNavContainer': rightNavContainer
+      });
 
-      // add the transparent layer in the back
-      var body = document.getElementsByTagName('body')[0];
-      addTransparentBackLayer();
-      body.appendChild(container);
-
-      // remove prev / next button if necessary
-      if (guide.arrayIndex == 0) {
-        // remove prev button
-        removeElem(CLASS_NAME.LEFT_NAV_ARROW);
-      } else if (guide.arrayIndex == _this.guides.length - 1) {
-        // remove next button
-        removeElem(CLASS_NAME.RIGHT_NAV_ARROW);
-      }
     };
     
     if (guide.stepImgBinaryData != null) {

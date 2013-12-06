@@ -5,7 +5,7 @@
   <title>Just a Test</title>
 
   <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>-->
-  <!--<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>-->
+  <link rel="stylesheet" type="text/css" href="../static/css/animation.css"/>
 
   <style type="text/css">
     /* <![CDATA[ */
@@ -160,8 +160,11 @@
       }
 
       var models = getGuides(jsonParsed);
-      var controller = new GuideController(models);
-      var view = new GuideThumbnailView(models, controller);
+      var thumbnailsView = new GuideThumbnailsView('content');
+      var guideStepView = new GuideStepView('body');
+      var controller = new GuideController(models, thumbnailsView, guideStepView);
+      controller.initWithThumbnailsView();
+//      var view = new GuideThumbnailView(models, controller);
 
     } catch(e) {
       if (console) console.error(e);
@@ -182,7 +185,7 @@
   document.onkeydown = function (evt) {
     if (evt.keyCode == 27) {
       // close current guide
-      closeCurrentGuide();
+      closeCurrentGuide(true);
     }
   };
   /* ]]> */

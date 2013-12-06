@@ -28,7 +28,8 @@ var CLASS_NAME = {
   BIG_IMG_CONTAINER: 'big-img-container',
   LEFT_NAV_ARROW: 'left-nav-arrow',
   RIGHT_NAV_ARROW: 'right-nav-arrow',
-  SELECTED_THUMBNAIL: 'selected-thumbnail'
+  SELECTED_THUMBNAIL: 'selected-thumbnail',
+  GONE_LEFT_RIGHT: 'goneLeftRight'
 };
 
 var TEMPLATE = {
@@ -179,12 +180,21 @@ function removeTransparentBackLayer() {
 
 /**
  * Close the current guide view
+ * @param withAnimation true or false
  */
-function closeCurrentGuide() {
-  var guide = document.getElementsByClassName(CLASS_NAME.BIG_IMG_CONTAINER);
-  if (guide.length > 0) {
-    removeElem(CLASS_NAME.BIG_IMG_CONTAINER);
-    removeTransparentBackLayer();
+function closeCurrentGuide(withAnimation) {
+  var guides = document.getElementsByClassName(CLASS_NAME.BIG_IMG_CONTAINER);
+  if (guides.length > 0) {
+    if (withAnimation) {
+      addClass(guides[0], CLASS_NAME.GONE_LEFT_RIGHT);
+      setTimeout(function() {
+        removeElem(CLASS_NAME.BIG_IMG_CONTAINER);
+        removeTransparentBackLayer();
+      }, 750);
+    } else {
+      removeElem(CLASS_NAME.BIG_IMG_CONTAINER);
+      removeTransparentBackLayer();
+    }
   }
 }
 
