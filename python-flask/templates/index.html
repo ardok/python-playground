@@ -11,22 +11,78 @@
     /* <![CDATA[ */
     .big-img-container {
       position: absolute;
+      top: 50px;
+      left: 35%;
+      z-index: 1050;
+    }
+
+    img.img-thumbnail {
+      cursor: pointer;
+    }
+
+    img.img-thumbnail.selected-thumbnail {
+      border: 1px solid blue;
+      margin-bottom: 5px;
+    }
+
+    .big-img-container > .big-img {
+      padding-left: 25px;
+      vertical-align: middle;
+      padding-right: 25px;
+    }
+
+    .big-img-container .left-nav-arrow,
+    .big-img-container .right-nav-arrow {
+      color: lavender;
+    }
+
+    .big-img-container .close-btn {
+      color: lavender;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .transparent-back-layer {
+      background-color: #000;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      opacity: 0.8;
+    }
+
+    #ajax-throbber {
+      position: fixed;
+      top: 49%;
+      left: 49%;
+      display: none;
+      z-index: 1100;
     }
     /* ]]> */
   </style>
 </head>
 <body>
+
 <h1>
-  Ok, this is me
+  Image Gallery for: <a id="gallery-title">Unknown</a> by <span id="guide-author">Unknown</span>
 </h1>
-What up
 
 <div id="content">
 
 </div>
 
-<script type="text/javascript" src="../static/helpers.js"></script>
-<script type="text/javascript" src="../static/model.js"></script>
+<div id="ajax-throbber">
+  <img src="../static/img/ajax-loader.gif" />
+</div>
+
+<script type="text/javascript" src="../static/js/helpers.js"></script>
+<script type="text/javascript" src="../static/js/view.js"></script>
+<script type="text/javascript" src="../static/js/model.js"></script>
+<script type="text/javascript" src="../static/js/controller.js"></script>
+
 
 <script type="text/javascript">
   /* <![CDATA[ */
@@ -37,6 +93,11 @@ What up
   var KEY_TYPE = 'type';
   var KEY_MEDIA_ITEM = 'media_item_uuid';
 
+  /**
+   * Filter through the json string / data that we get into only the valid steps with image
+   * @param data the json string
+   * @returns {Array} of valid guides with image
+   */
   function getGuides(data) {
     var validDataWithImg = [];
 
@@ -55,28 +116,55 @@ What up
 
     var guides = [];
 
-    for (var key in validDataWithImg) {
-      var value = validDataWithImg[key]; // contains `caption` & `media_item_uuid`
-//      XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0?q=small', function(data) {
-//      });
-      guides.push(new Guide(value[KEY_MEDIA_ITEM], value[KEY_CAPTION]));
+    if (validDataWithImg.length > 0) {
+      var index = 0;
+      for (var key in validDataWithImg) {
+        var value = validDataWithImg[key]; // contains `caption` & `media_item_uuid`
+        guides.push(new Guide(value[KEY_MEDIA_ITEM], value[KEY_TYPE], value[KEY_CAPTION], index));
+        index++;
+      }
     }
 
     return guides;
-    
-//    XMLHttp.get('http://localhost:5000/get_image/0b2011fbd0644287b373fb70198e7ec0?q=small', function(data) {
-//      console.log(data);
-//      var img = document.createElement('img');
-//      img.src = 'data:image/jpeg;base64,' + data;
-//      document.body.appendChild(img);
-//    });
   }
 
+  /**
+   * Where the magic happens
+   * @param data the json string
+   */
   function init(data) {
-    var guides = getGuides(JSON.parse(data));
+    try {
+      var jsonParsed = JSON.parse(data);
 
-    for (var key in guides) {
-      guides[key].loadImage(document.getElementById('content'), IMG_QUALITY.SMALL);
+      // init title & author
+      var title = document.getElementById('gallery-title');
+      var author = document.getElementById('guide-author');
+      if (jsonParsed && jsonParsed.guide) {
+        var guide = jsonParsed.guide;
+
+        // title
+        if (guide.publish_title) {
+          title.innerText = guide.publish_title;
+        }
+
+        // href
+        if (guide.publish_url) {
+          title.href = 'http://snapguide.com' + guide.publish_url;
+        }
+
+        // author
+        if (guide.author && guide.author.name) {
+          author.innerText = guide.author.name;
+        }
+      }
+
+      var models = getGuides(jsonParsed);
+      var controller = new GuideController(models);
+      var view = new GuideThumbnailView(models, controller);
+
+    } catch(e) {
+      if (console) console.error(e);
+      document.getElementById('content').innerHTML = '<div>Boo hoo! Failed!</div>';
     }
   }
 
@@ -86,6 +174,16 @@ What up
       init(data);
     });
   });
+
+  /**
+   * Close the current guide view on Esc key
+   */
+  document.onkeydown = function (evt) {
+    if (evt.keyCode == 27) {
+      // close current guide
+      closeCurrentGuide();
+    }
+  };
   /* ]]> */
 </script>
 </body>

@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
-import requests
+#import requests
 import base64
 
 
@@ -67,8 +67,12 @@ def get_guide(id):
   Method to get a guide from Snapguide, return the data as json string
   JS will need to parse it first
   """
-  r = requests.get('http://snapguide.com/api/v1/guide/' + id)
-  return r.text
+  import urllib2
+  #r = requests.get('http://snapguide.com/api/v1/guide/' + id)
+
+  r = urllib2.urlopen('http://snapguide.com/api/v1/guide/' + id)
+  #return r.text
+  return r.read()
 
 @app.route('/get_image/<id>')
 @crossdomain(origin='*')
@@ -77,6 +81,9 @@ def get_image(id):
   Method to get an image from a guide by passing the hash id of the image
   Return the encoded 64 binary data of the image
   """
+  import urllib2
+
+
   endUrl = 'original.jpg'
 
   quality = ''
@@ -89,9 +96,12 @@ def get_image(id):
     else:
       endUrl = quality
 
-  resp = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
-  bData = resp.content
-  
+  #resp = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
+  #bData = resp.content
+
+  resp = urllib2.urlopen('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
+  bData = resp.read()
+
   # JS doesn't like non-encoded binary, so we need to return the encoded one here
   return base64.b64encode(bData)
 
