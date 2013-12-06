@@ -3,7 +3,6 @@ from flask import Flask, render_template, url_for
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
-#import requests
 import base64
 
 
@@ -54,7 +53,7 @@ def crossdomain(origin=None, methods=None, headers=None,
 app = Flask(__name__, static_url_path='/static')
 
 app.jinja_env.globals['static'] = (
-    lambda filename: url_for('static', filename=filename))
+  lambda filename: url_for('static', filename=filename))
 
 @app.route("/")
 def index():
@@ -68,10 +67,7 @@ def get_guide(id):
   JS will need to parse it first
   """
   import urllib2
-  #r = requests.get('http://snapguide.com/api/v1/guide/' + id)
-
   r = urllib2.urlopen('http://snapguide.com/api/v1/guide/' + id)
-  #return r.text
   return r.read()
 
 @app.route('/get_image/<id>')
@@ -82,7 +78,6 @@ def get_image(id):
   Return the encoded 64 binary data of the image
   """
   import urllib2
-
 
   endUrl = 'original.jpg'
 
@@ -96,9 +91,6 @@ def get_image(id):
     else:
       endUrl = quality
 
-  #resp = requests.get('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
-  #bData = resp.content
-
   resp = urllib2.urlopen('http://images.snapguide.com/images/guide/' + id + '/' + endUrl)
   bData = resp.read()
 
@@ -107,4 +99,4 @@ def get_image(id):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run()
+    app.run(threaded=True)

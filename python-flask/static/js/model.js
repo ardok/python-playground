@@ -21,6 +21,7 @@ function Guide(mediaId, mediaType, caption, arrayIndex) {
   this.mediaId = mediaId; // string
   this.mediaType = mediaType; // string
   this.caption = caption; // string
+  this.stepImgBinaryData = null; // string
 
   this.arrayIndex = arrayIndex;
 }

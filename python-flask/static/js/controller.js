@@ -17,10 +17,43 @@ GuideController.prototype = {
   loadImageThumbnail: function(guide, appendTarget) {
     var _this = this;
     if (guide.mediaId) {
+      var img = document.createElement('img');
+      img.id = guide.mediaId;
+      img.className = CLASS_NAME.IMG_THUMBNAIL;
+      img.src = '../static/img/60x60.gif';
+      
+      var spanContainer = document.createElement('span');
+      spanContainer.className = 'flip-container';
+      
+      appendTo(appendTarget, spanContainer);
+      
+      appendTo(spanContainer,
+        '<span class="flipper">' +
+          '<span class="front">' +
+          '</span>' +
+          '<span class="back">' +
+          '</span>' +
+        '</span>'
+      );
+      
+      appendTo();
+      
+//      if (appendTarget) {
+//        appendTo(appendTarget,
+//          '<div class="flip-container">' +
+//            '<div class="flipper">' +
+//              '<div class="front">' +
+//              '</div>' +
+//              '<div class="back">' +
+//              '</div>' +
+//            '</div>' +
+//          '</div>'
+//        );
+//      }
+      
+//      if (appendTarget) appendTarget.appendChild(img);
+            
       XMLHttp.get('http://localhost:5000/get_image/' + guide.mediaId + '?q=' + IMG_QUALITY.SMALL, function(data) {
-        var img = document.createElement('img');
-        img.id = guide.mediaId;
-        img.className = CLASS_NAME.IMG_THUMBNAIL;
         img.src = 'data:image/jpeg;base64,' + data;
         img.onclick = function() {
           /**
@@ -29,7 +62,6 @@ GuideController.prototype = {
           _this.currentGuideIndex = guide.arrayIndex;
           new GuideView(_this.guides, guide, _this);
         };
-        if (appendTarget) appendTarget.appendChild(img);
       });
     }
   },
@@ -41,7 +73,8 @@ GuideController.prototype = {
   loadImageStep: function(guide) {
     var _this = this;
     showThrobber();
-    XMLHttp.get('http://localhost:5000/get_image/' + guide.mediaId + '?q=315x500_ac.jpg', function(bigData) {
+    
+    var showImageStep = function(bigData) {
       hideThrobber();
 
       // close current guide & clear selected guide
@@ -54,7 +87,7 @@ GuideController.prototype = {
       // create the big container
       var container = document.createElement('div');
       container.className = CLASS_NAME.BIG_IMG_CONTAINER;
-
+      
       // create the image
       var bigImg = document.createElement('img');
       bigImg.src = 'data:image/jpeg;base64,' + bigData;
@@ -110,7 +143,18 @@ GuideController.prototype = {
         // remove next button
         removeElem(CLASS_NAME.RIGHT_NAV_ARROW);
       }
-    });
+    };
+    
+    if (guide.stepImgBinaryData != null) {
+      showImageStep(guide.stepImgBinaryData);
+    } else {
+      XMLHttp.get('http://localhost:5000/get_image/' + guide.mediaId + '?q=315x500_ac.jpg', function(bigData) {
+        // put the big binary data into our model for faster navigation!
+        guide.stepImgBinaryData = bigData;
+        
+        showImageStep(bigData);
+      });
+    }
   },
 
   getCurrentIndex: function() {
@@ -126,11 +170,6 @@ GuideController.prototype = {
    */
   goToNextIndex: function() {
     this.currentGuideIndex++;
-
-    if (this.currentGuideIndex == this.guides.length - 1) {
-      // remove next button
-      removeElem(CLASS_NAME.RIGHT_NAV_ARROW);
-    }
     this.loadImageStep(this.guides[this.currentGuideIndex]);
   },
 
@@ -139,12 +178,6 @@ GuideController.prototype = {
    */
   goToPrevIndex: function() {
     this.currentGuideIndex--;
-
-    if (this.currentGuideIndex == 0) {
-      // remove prev button
-      removeElem(CLASS_NAME.LEFT_NAV_ARROW);
-    }
-
     this.loadImageStep(this.guides[this.currentGuideIndex]);
   }
 };
