@@ -4,8 +4,9 @@ from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
 import base64
+import urllib2
 
-
+# cross domain from: http://flask.pocoo.org/snippets/56/
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
                 automatic_options=True):
@@ -52,6 +53,7 @@ def crossdomain(origin=None, methods=None, headers=None,
 
 app = Flask(__name__, static_url_path='/static')
 
+# this is to serve static files
 app.jinja_env.globals['static'] = (
   lambda filename: url_for('static', filename=filename))
 
@@ -66,7 +68,6 @@ def get_guide(id):
   Method to get a guide from Snapguide, return the data as json string
   JS will need to parse it first
   """
-  import urllib2
   r = urllib2.urlopen('http://snapguide.com/api/v1/guide/' + id)
   return r.read()
 
@@ -77,12 +78,13 @@ def get_image(id):
   Method to get an image from a guide by passing the hash id of the image
   Return the encoded 64 binary data of the image
   """
-  import urllib2
 
+  # by default we will fetch the original image
   endUrl = 'original.jpg'
 
   quality = ''
   if request.args != None:
+    # a `q` param is passed in, get it
     quality = request.args.get('q', '')
     if quality.lower() == 'medium':
       endUrl = '300x294_ac.jpg'

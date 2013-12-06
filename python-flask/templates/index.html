@@ -2,9 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Just a Test</title>
+  <title>Snapguide</title>
 
-  <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>-->
   <link rel="stylesheet" type="text/css" href="../static/css/animation.css"/>
 
   <style type="text/css">
@@ -63,6 +62,8 @@
     }
     /* ]]> */
   </style>
+
+  <link rel="stylesheet" type="text/css" href="../static/css/responsive.css"/>
 </head>
 <body>
 
@@ -102,6 +103,7 @@
   function getGuides(data) {
     var validDataWithImg = [];
 
+    // find all valid data with images in it (steps)
     if (data[KEY_GUIDE] &&
         data[KEY_GUIDE][KEY_ITEMS]) {
       for (var key in data[KEY_GUIDE][KEY_ITEMS]) {
@@ -117,6 +119,7 @@
 
     var guides = [];
 
+    // from all valid data with img, create our model
     if (validDataWithImg.length > 0) {
       var index = 0;
       for (var key in validDataWithImg) {
@@ -137,7 +140,7 @@
     try {
       var jsonParsed = JSON.parse(data);
 
-      // init title & author
+      // init title & author (not important)
       var title = document.getElementById('gallery-title');
       var author = document.getElementById('guide-author');
       if (jsonParsed && jsonParsed.guide) {
@@ -159,12 +162,12 @@
         }
       }
 
+      // initialize model view and controller
       var models = getGuides(jsonParsed);
       var thumbnailsView = new GuideThumbnailsView('content');
       var guideStepView = new GuideStepView('body');
       var controller = new GuideController(models, thumbnailsView, guideStepView);
       controller.initWithThumbnailsView();
-//      var view = new GuideThumbnailView(models, controller);
 
     } catch(e) {
       if (console) console.error(e);
@@ -172,22 +175,26 @@
     }
   }
 
-  // get our data
+  /**
+   * ===== START HERE =====
+   */
   addEventOnLoad(window, function() {
+    /**
+     * Close the current guide view on Esc key
+     */
+    document.onkeydown = function (evt) {
+      if (evt.keyCode == 27) {
+        // close current guide
+        closeCurrentGuide(true);
+      }
+    };
+
+    // get our data
+    // change guide id if you need to
     XMLHttp.get('http://localhost:5000/get_guide/b995492d5e7943e3b2757a88fe3ef7c6', function(data) {
       init(data);
     });
   });
-
-  /**
-   * Close the current guide view on Esc key
-   */
-  document.onkeydown = function (evt) {
-    if (evt.keyCode == 27) {
-      // close current guide
-      closeCurrentGuide(true);
-    }
-  };
   /* ]]> */
 </script>
 </body>

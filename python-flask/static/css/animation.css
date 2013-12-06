@@ -1,4 +1,8 @@
-/** Thumbnail hover animation */
+/**
+=====
+Thumbnail hover animation
+=====
+*/
 .img-thumbnail {
   -webkit-transition: all .2s ease-in-out;
 }
@@ -7,7 +11,11 @@
   -webkit-transform: scale(1.2);
 }
 
-/** Guide step close animation */
+/**
+=====
+Guide step close animation
+=====
+*/
 @-webkit-keyframes goneLeftRight {
   0% {
     margin-left: 0;

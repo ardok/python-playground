@@ -1,0 +1,36 @@
+@media (min-width: 650px) and (max-width: 800px) {
+  .big-img-container {
+    left: 23%;
+  }
+}
+
+@media (min-width: 486px) and (max-width: 649px) {
+  .big-img-container {
+    left: 10%;
+  }
+}
+
+@media (max-width: 485px) {
+  .big-img-container {
+    left: 0;
+  }
+
+  .big-img-container .left-nav-container {
+    float: left;
+    margin-left: 10px;
+  }
+
+  .big-img-container .big-img {
+    float: left;
+    clear: both;
+    padding-left: 15px;
+  }
+
+  .big-img-container .right-nav-container {
+    margin-left: 125px;
+  }
+
+  .big-img-container .close-btn {
+    right: 20px;
+  }
+}

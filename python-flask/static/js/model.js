@@ -21,24 +21,7 @@ function Guide(mediaId, mediaType, caption, arrayIndex) {
   this.mediaId = mediaId; // string
   this.mediaType = mediaType; // string
   this.caption = caption; // string
-  this.stepImgBinaryData = null; // string
+  this.stepImgBinaryData = null; // string (this is some kind of `cache` for our step view
 
   this.arrayIndex = arrayIndex;
-}
-
-function GuideStep(elems) {
-  this.mainContainer = null;
-  this.closeBtn = null;
-  this.leftNavContainer = null;
-  this.bigImg = null;
-  this.rightNavContainer = null;
-
-  // init variables
-  if (elems) {
-    this.mainContainer = elems.mainContainer;
-    this.closeBtn = elems.closeBtn;
-    this.leftNavContainer = elems.leftNavContainer;
-    this.bigImg = elems.bigImg;
-    this.rightNavContainer = elems.rightNavContainer;
-  }
 }

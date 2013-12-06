@@ -15,3 +15,14 @@ How to run this:
    * Restarting with reloader
   ```
 3.  Open your browser and hit `localhost:5000`
+
+
+What this sample app does:
+
+1.  Fetch the json data for this guide: http://snapguide.com/guides/make-confit-byaldi/  (can be changed in the code)
+2.  Filter the json data to get data with image metadata in it
+3.  For each of data with image metadata in it, create a model of our own
+4.  For each model, fetch the actual image from Snapguide (hence the thumbnail view)
+5.  On thumbnail image click, fetch the bigger image from Snapguide and save its binary data into our model (for faster navigation later). Then show the big image with `Prev` and `Next` button
+6.  Each Guide model has `caption` stored in it, but I don't use it in this sample app
+7.  It's also quite responsive :smile:

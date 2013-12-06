@@ -6,11 +6,6 @@ var XMLState = {
   RESPONSE_READY: 4
 };
 
-var RESPONSE_CODE = {
-  OK: 200,
-  NOT_FOUND: 404
-};
-
 var HTTP_VERB = {
   GET: 'GET',
   POST: 'POST'
@@ -19,7 +14,8 @@ var HTTP_VERB = {
 var IMG_QUALITY = {
   SMALL: 'small',
   MEDIUM: 'medium',
-  ORIG: 'original'
+  ORIG: 'original',
+  STEP: '315x500_ac.jpg'
 };
 
 var CLASS_NAME = {
@@ -57,9 +53,6 @@ var XMLHttp = {
         case XMLState.PROCESSING_REQUEST: // processing request
           break;
         default: // request finished and response is ready (XMLState.RESPONSE_READY)
-//          if (xmlhttp.status == RESPONSE_CODE.OK) {
-//            console.log(xmlhttp.responseText);
-//          }
           callback(xmlhttp.responseText);
           break;
       }
@@ -223,7 +216,6 @@ function removeClass(elem, className) {
       elem.className != undefined) {
     var re = new RegExp(className, 'g');
     elem.className = elem.className.replace(re, '');
-//    elem.className = elem.className.replace(/(?:^|\s)[className](?!\S)/, '');
   }
 }
 
