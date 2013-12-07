@@ -40,6 +40,18 @@ GuideThumbnailsView.prototype = {
         if (guide.caption) img.title = guide.caption;
       }
     }
+  },
+
+  /**
+   * Method to add the selected class
+   * @param guideId the guide id to be marked as selected
+   */
+  select: function(guideId) {
+    clearSelectedGuide();
+    var elem = document.getElementById(guideId);
+    if (elem) {
+      addClass(elem, CLASS_NAME.SELECTED_THUMBNAIL);
+    }
   }
 };
 
@@ -51,6 +63,9 @@ GuideThumbnailsView.prototype = {
  */
 function GuideStepView(appendTarget) {
   this.appendTarget = getViewElem(appendTarget);
+  
+  // state whether it is loading
+  this.loading = false;
 }
 
 GuideStepView.prototype = {
@@ -75,6 +90,66 @@ GuideStepView.prototype = {
         addTransparentBackLayer();
         body.appendChild(mainContainer);
       }
+      
     }
+  },
+
+  /**
+   * Close current step view if it is open and not loading
+   * @param withAnimation true if you want to close it with animation
+   */
+  close: function(withAnimation) {
+    if (!this.isLoading()) {
+      var views = document.getElementsByClassName(CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER);
+      if (views.length > 0) {
+        if (withAnimation) {
+          addClass(views[0], CLASS_NAME.GONE_LEFT_RIGHT);
+          setTimeout(function() {
+            removeElem(CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER);
+            removeTransparentBackLayer();
+          }, 750);
+        } else {
+          removeElem(CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER);
+          removeTransparentBackLayer();
+        }
+      }
+    }
+  },
+
+  /**
+   * Check whether step view is open
+   * @return boolean true if guide step view is open; false otherwise
+   */
+  isOpen: function() {
+    var views = document.getElementsByClassName(CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER);
+    return views.length > 0;
+  },
+
+  /**
+   * Set the `loading` state
+   * true by default
+   * @param state boolean
+   */
+  setLoading: function(state) {
+    if (state != undefined &&
+        typeof state === 'boolean') {
+      this.loading = state;
+    } else {
+      this.loading = true;
+    }
+  },
+
+  /**
+   * Set the `loading` state to false
+   */
+  setUnloading: function() {
+    this.loading = false;
+  },
+
+  /**
+   * @returns {*} boolean state of `loading`
+   */
+  isLoading: function() {
+    return this.loading;
   }
 };

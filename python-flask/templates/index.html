@@ -6,7 +6,7 @@
 
   <link rel="stylesheet" type="text/css" href="../static/css/animation.css"/>
   <link rel="stylesheet" type="text/css" href="../static/css/main.css"/>
-  
+
   <link rel="stylesheet" type="text/css" href="../static/css/responsive.css"/>
 </head>
 <body>
@@ -21,7 +21,7 @@
 </div>
 
 <div id="ajax-throbber">
-  <img src="../static/img/ajax-loader.gif" />
+  <img src="../static/img/ajax-loader.gif"/>
 </div>
 
 <script type="text/javascript" src="../static/js/helpers.js"></script>
@@ -113,7 +113,43 @@
       var controller = new GuideController(models, thumbnailsView, guideStepView);
       controller.initWithThumbnailsView();
 
-    } catch(e) {
+      // bind help keys
+      document.onkeydown = function (evt) {
+
+        switch (evt.keyCode) {
+          case KEY_CODE.ENTER:
+            // open selected guide
+            if (!guideStepView.isOpen()) {
+              controller.loadImageStep(controller.getCurrentGuide());
+            }  
+            break;
+          case KEY_CODE.ESC:
+            // close current guide
+            guideStepView.close(true);
+            break;
+          case KEY_CODE.LEFT_ARROW:
+            if (guideStepView.isOpen()) {
+              // go to prev guide if guide step view is open
+              controller.displayPrevStep();
+            } else {
+              // go to prev guide on thumbnail view
+              controller.toPrevThumbnail();
+            }
+            break;
+          case KEY_CODE.RIGHT_ARROW:
+            if (guideStepView.isOpen()) {
+              // go to next guide if guide step view is open
+              controller.displayNextStep();
+            } else {
+              // go to next guide on thumbnail
+              controller.toNextThumbnail();
+            }
+            break;
+        }
+
+      };
+
+    } catch (e) {
       if (console) console.error(e);
       document.getElementById('content').innerHTML = '<div>Boo hoo! Failed!</div>';
     }
@@ -122,20 +158,10 @@
   /**
    * ===== START HERE =====
    */
-  addEventOnLoad(window, function() {
-    /**
-     * Close the current guide view on Esc key
-     */
-    document.onkeydown = function (evt) {
-      if (evt.keyCode == 27) {
-        // close current guide
-        closeCurrentGuide(true);
-      }
-    };
-
+  addEventOnLoad(window, function () {
     // get our data
     // change guide id if you need to
-    XMLHttp.get('http://localhost:5000/get_guide/b995492d5e7943e3b2757a88fe3ef7c6', function(data) {
+    XMLHttp.get('http://localhost:5000/get_guide/b995492d5e7943e3b2757a88fe3ef7c6', function (data) {
       init(data);
     });
   });

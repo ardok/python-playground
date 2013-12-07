@@ -10,6 +10,8 @@ function GuideController(guides, thumbnailsView, stepView) {
   this.currentGuideIndex = -1;
   this.thumbnailsView = thumbnailsView;
   this.stepView = stepView;
+  
+  this.loading = false;
 }
 
 GuideController.prototype = {
@@ -76,24 +78,25 @@ GuideController.prototype = {
   loadImageStep: function(guide) {
 
     if (!guide &&
-        !this.stepView) return;
+        !this.stepView &&
+        this.stepView.isLoading()) return;
+    // do not go below here if we are loading a step view
 
     var _this = this;
-    showThrobber();
     
     var showImageStep = function(bigData) {
       hideThrobber();
 
       // close current guide & clear selected guide
-      closeCurrentGuide();
+      _this.stepView.close();
       clearSelectedGuide();
 
       // assign selected class to the current element
-      addClass(document.getElementById(guide.mediaId), CLASS_NAME.SELECTED_THUMBNAIL);
+      _this.thumbnailsView.select(guide.mediaId);
 
       // create the big container
       var container = document.createElement('div');
-      container.className = CLASS_NAME.BIG_IMG_CONTAINER;
+      container.className = CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER;
       
       // create the image
       var bigImg = document.createElement('img');
@@ -110,7 +113,7 @@ GuideController.prototype = {
         leftNavArrow.className = 'left-nav-arrow';
         leftNavArrow.href = 'javascript:void("prev");';
         leftNavArrow.onclick = function() {
-          _this.goToPrevIndex();
+          _this.displayPrevStep();
         };
         leftNavArrow.innerText = 'Prev';
         leftNavContainer.appendChild(leftNavArrow);
@@ -125,7 +128,7 @@ GuideController.prototype = {
         rightNavArrow.className = 'right-nav-arrow';
         rightNavArrow.href = 'javascript:void("next");';
         rightNavArrow.onclick = function() {
-          _this.goToNextIndex();
+          _this.displayNextStep();
         };
         rightNavArrow.innerText = 'Next';
         rightNavContainer.appendChild(rightNavArrow);
@@ -137,7 +140,7 @@ GuideController.prototype = {
       closeBtn.innerHTML = '&times;';
       closeBtn.href = 'javascript:void("close");';
       closeBtn.onclick = function() {
-        closeCurrentGuide(true);
+        _this.stepView.close(true);
       };
 
       // draw the step view (just put the elements into our HTML page)
@@ -155,8 +158,13 @@ GuideController.prototype = {
     if (guide.stepImgBinaryData != null) {
       showImageStep(guide.stepImgBinaryData);
     } else {
+      showThrobber();
+      
+      _this.stepView.setLoading();
       // followed snapguide website for the image size (315x500)
       XMLHttp.get('http://localhost:5000/get_image/' + guide.mediaId + '?q=' + IMG_QUALITY.STEP, function(bigData) {
+        _this.stepView.setUnloading();
+        
         // put the big binary data into our model for faster navigation!
         guide.stepImgBinaryData = bigData;
         
@@ -172,20 +180,62 @@ GuideController.prototype = {
   setCurrentIndex: function(i) {
     this.currentGuideIndex = i;
   },
-
+  
+  getCurrentGuide: function() {
+    if (this.currentGuideIndex == -1 || this.currentGuideIndex > this.guides.length - 1) return null;
+    return this.guides[this.currentGuideIndex];
+  },
+  
   /**
-   * This should be triggered when user clicks on Next button
+   * Method to display next step
    */
-  goToNextIndex: function() {
-    this.currentGuideIndex++;
-    this.loadImageStep(this.guides[this.currentGuideIndex]);
+  displayNextStep: function() {
+    if (!this.stepView.isLoading()) {
+      this.currentGuideIndex++;
+      this.loadImageStep(this.getCurrentGuide());
+    }
   },
 
   /**
-   * This should be triggered when user clicks on Prev button
+   * Method to display previous step
    */
-  goToPrevIndex: function() {
-    this.currentGuideIndex--;
-    this.loadImageStep(this.guides[this.currentGuideIndex]);
+  displayPrevStep: function() {
+    if (!this.stepView.isLoading()) {
+      this.currentGuideIndex--;
+      this.loadImageStep(this.getCurrentGuide());
+    }
+  },
+
+  /**
+   * Method to tell thumbnail view to redraw the `selected` guide
+   */
+  pingRedrawSelected: function() {
+    var guide = this.getCurrentGuide();
+    if (guide != null) { 
+      var guideId = guide.mediaId;
+      if (guideId != undefined) this.thumbnailsView.select(guideId);
+    }
+  },
+
+  /**
+   * Method to go to the previous step in thumbnail
+   */
+  toPrevThumbnail: function() {
+    if (!this.stepView.isOpen() &&
+        this.currentGuideIndex > 0) {
+      this.currentGuideIndex--;
+      this.pingRedrawSelected();
+    }
+  },
+
+  /**
+   * Method to go to the next step in thumbnail
+   */
+  toNextThumbnail: function() {
+    if (!this.stepView.isOpen() &&
+        this.currentGuideIndex < this.guides.length) {
+      this.currentGuideIndex++;
+      this.pingRedrawSelected();
+    }
   }
 };

@@ -21,7 +21,7 @@ var IMG_QUALITY = {
 var CLASS_NAME = {
   BACKLAYER: 'transparent-back-layer',
   IMG_THUMBNAIL: 'img-thumbnail',
-  BIG_IMG_CONTAINER: 'big-img-container',
+  GUIDE_STEP_VIEW_CONTAINER: 'guide-step-view-container',
   LEFT_NAV_ARROW: 'left-nav-arrow',
   RIGHT_NAV_ARROW: 'right-nav-arrow',
   SELECTED_THUMBNAIL: 'selected-thumbnail',
@@ -31,6 +31,13 @@ var CLASS_NAME = {
 var TEMPLATE = {
   BACKLAYER: '<div class="' + CLASS_NAME.BACKLAYER + '"></div>'
 };
+
+var KEY_CODE = {
+  ENTER: 13,
+  ESC: 27,
+  LEFT_ARROW: 37,
+  RIGHT_ARROW: 39
+}
 
 var XMLHttp = {
   /**
@@ -172,26 +179,6 @@ function removeTransparentBackLayer() {
 }
 
 /**
- * Close the current guide view
- * @param withAnimation true or false
- */
-function closeCurrentGuide(withAnimation) {
-  var guides = document.getElementsByClassName(CLASS_NAME.BIG_IMG_CONTAINER);
-  if (guides.length > 0) {
-    if (withAnimation) {
-      addClass(guides[0], CLASS_NAME.GONE_LEFT_RIGHT);
-      setTimeout(function() {
-        removeElem(CLASS_NAME.BIG_IMG_CONTAINER);
-        removeTransparentBackLayer();
-      }, 750);
-    } else {
-      removeElem(CLASS_NAME.BIG_IMG_CONTAINER);
-      removeTransparentBackLayer();
-    }
-  }
-}
-
-/**
  * Show ajax throbber
  */
 function showThrobber() {
@@ -240,6 +227,7 @@ function addClass(elem, className) {
 
 /**
  * Clear the `selected` guide class from thumbnail (you know, the selected effect)
+ * Remove it by finding the element with `selected-thumbnail` class
  */
 function clearSelectedGuide() {
   var e = document.getElementsByClassName(CLASS_NAME.SELECTED_THUMBNAIL);

@@ -1,4 +1,4 @@
-.big-img-container {
+.guide-step-view-container {
   position: absolute;
   top: 50px;
   left: 30%;
@@ -22,18 +22,18 @@ img.img-thumbnail {
   display: none;
 }
 
-.big-img-container > .big-img {
+.guide-step-view-container > .big-img {
   padding-left: 25px;
   vertical-align: middle;
   padding-right: 25px;
 }
 
-.big-img-container .left-nav-arrow,
-.big-img-container .right-nav-arrow {
+.guide-step-view-container .left-nav-arrow,
+.guide-step-view-container .right-nav-arrow {
   color: lavender;
 }
 
-.big-img-container .close-btn {
+.guide-step-view-container .close-btn {
   color: lavender;
   position: absolute;
   top: 0;

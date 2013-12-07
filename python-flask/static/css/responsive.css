@@ -1,37 +1,37 @@
 @media (min-width: 650px) and (max-width: 800px) {
-  .big-img-container {
+  .guide-step-view-container {
     left: 23%;
   }
 }
 
 @media (min-width: 486px) and (max-width: 649px) {
-  .big-img-container {
+  .guide-step-view-container {
     left: 10%;
   }
 }
 
 @media (max-width: 485px) {
-  .big-img-container {
+  .guide-step-view-container {
     left: 0;
   }
 
-  .big-img-container .left-nav-container {
+  .guide-step-view-container .left-nav-container {
     float: left;
     margin-left: 10px;
   }
 
-  .big-img-container .big-img {
+  .guide-step-view-container .big-img {
     float: left;
     clear: both;
     padding-left: 1px;
     padding-right: 1px;
   }
 
-  .big-img-container .right-nav-container {
+  .guide-step-view-container .right-nav-container {
     margin-left: 125px;
   }
 
-  .big-img-container .close-btn {
+  .guide-step-view-container .close-btn {
     right: 20px;
   }
 }
