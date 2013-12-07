@@ -198,7 +198,8 @@ GuideController.prototype = {
    * Method to display next step
    */
   displayNextStep: function() {
-    if (!this.stepView.isLoading()) {
+    if (!this.stepView.isLoading() &&
+        this.currentGuideIndex != this.guides.length - 1) {
       this.currentGuideIndex++;
       this.loadImageStep(this.getCurrentGuide());
     }
@@ -208,7 +209,8 @@ GuideController.prototype = {
    * Method to display previous step
    */
   displayPrevStep: function() {
-    if (!this.stepView.isLoading()) {
+    if (!this.stepView.isLoading() &&
+        this.currentGuideIndex != 0) {
       this.currentGuideIndex--;
       this.loadImageStep(this.getCurrentGuide());
     }
