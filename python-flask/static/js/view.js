@@ -99,13 +99,17 @@ GuideStepView.prototype = {
    * @param withAnimation true if you want to close it with animation
    */
   close: function(withAnimation) {
+    var _this = this;
+    
     if (!this.isLoading()) {
       var views = document.getElementsByClassName(CLASS_NAME.GUIDE_STEP_VIEW_CONTAINER);
       if (views.length > 0) {
         var view = views[0];
         if (withAnimation) {
           W(view).addClass(CLASS_NAME.GONE_LEFT_RIGHT);
+          _this.setLoading();
           setTimeout(function() {
+            _this.setUnloading();
             W(view).removeElem();
             removeTransparentBackLayer();
           }, 750);
