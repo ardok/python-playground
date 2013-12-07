@@ -92,6 +92,55 @@ GuideController.prototype = {
 
     var _this = this;
     
+    var getPrevNavContainer = function() {
+      var leftNavContainer = null;
+      if (guide.arrayIndex != 0) {
+        // create a container around our left navigation so we can add more stuff easily later on
+        leftNavContainer = document.createElement('span');
+        leftNavContainer.className = 'left-nav-container';
+        
+        var leftNavArrow = document.createElement('a');
+        leftNavArrow.className = 'left-nav-arrow';
+        leftNavArrow.href = 'javascript:void("prev");';
+        leftNavArrow.onclick = function() {
+          _this.displayPrevStep();
+        };
+        leftNavArrow.innerText = 'Prev';
+        leftNavContainer.appendChild(leftNavArrow);
+      }
+      return leftNavContainer;
+    };
+    
+    var getNextNavContainer = function() {
+      var rightNavContainer = null;
+      if (guide.arrayIndex != _this.guides.length - 1) {
+        // create a container around our left navigation so we can add more stuff easily later on
+        rightNavContainer = document.createElement('span');
+        rightNavContainer.className = 'right-nav-container';
+        
+        var rightNavArrow = document.createElement('a');
+        rightNavArrow.className = 'right-nav-arrow';
+        rightNavArrow.href = 'javascript:void("next");';
+        rightNavArrow.onclick = function() {
+          _this.displayNextStep();
+        };
+        rightNavArrow.innerText = 'Next';
+        rightNavContainer.appendChild(rightNavArrow);
+      }
+      return rightNavContainer;
+    };
+    
+    var getCloseBtn = function() {
+      var closeBtn = document.createElement('a');
+      closeBtn.className = 'close-btn';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.href = 'javascript:void("close");';
+      closeBtn.onclick = function() {
+        _this.stepView.close(true);
+      };
+      return closeBtn;
+    };
+    
     var showImageStep = function(bigData) {
       hideThrobber();
 
@@ -113,43 +162,13 @@ GuideController.prototype = {
       if (guide.caption) bigImg.title = guide.caption;
 
       // create prev navigation
-      var leftNavContainer = null;
-      if (guide.arrayIndex != 0) {
-        leftNavContainer = document.createElement('span');
-        leftNavContainer.className = 'left-nav-container';
-        var leftNavArrow = document.createElement('a');
-        leftNavArrow.className = 'left-nav-arrow';
-        leftNavArrow.href = 'javascript:void("prev");';
-        leftNavArrow.onclick = function() {
-          _this.displayPrevStep();
-        };
-        leftNavArrow.innerText = 'Prev';
-        leftNavContainer.appendChild(leftNavArrow);
-      }
+      var leftNavContainer = getPrevNavContainer();
 
       // create next navigation
-      var rightNavContainer = null;
-      if (guide.arrayIndex != _this.guides.length - 1) {
-        rightNavContainer = document.createElement('span');
-        rightNavContainer.className = 'right-nav-container';
-        var rightNavArrow = document.createElement('a');
-        rightNavArrow.className = 'right-nav-arrow';
-        rightNavArrow.href = 'javascript:void("next");';
-        rightNavArrow.onclick = function() {
-          _this.displayNextStep();
-        };
-        rightNavArrow.innerText = 'Next';
-        rightNavContainer.appendChild(rightNavArrow);
-      }
+      var rightNavContainer = getNextNavContainer();
 
       // create close button
-      var closeBtn = document.createElement('a');
-      closeBtn.className = 'close-btn';
-      closeBtn.innerHTML = '&times;';
-      closeBtn.href = 'javascript:void("close");';
-      closeBtn.onclick = function() {
-        _this.stepView.close(true);
-      };
+      var closeBtn = getCloseBtn();
 
       // draw the step view (just put the elements into our HTML page)
       _this.stepView.draw({
