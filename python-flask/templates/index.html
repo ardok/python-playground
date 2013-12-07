@@ -5,65 +5,7 @@
   <title>Snapguide</title>
 
   <link rel="stylesheet" type="text/css" href="../static/css/animation.css"/>
-
-  <style type="text/css">
-    /* <![CDATA[ */
-    .big-img-container {
-      position: absolute;
-      top: 50px;
-      left: 30%;
-      z-index: 1050;
-    }
-
-    img.img-thumbnail {
-      cursor: pointer;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
-
-    img.img-thumbnail.selected-thumbnail {
-      border: 3px solid blue;
-      margin-bottom: 7px;
-    }
-
-    .big-img-container > .big-img {
-      padding-left: 25px;
-      vertical-align: middle;
-      padding-right: 25px;
-    }
-
-    .big-img-container .left-nav-arrow,
-    .big-img-container .right-nav-arrow {
-      color: lavender;
-    }
-
-    .big-img-container .close-btn {
-      color: lavender;
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-
-    .transparent-back-layer {
-      background-color: #000;
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 1000;
-      opacity: 0.8;
-    }
-
-    #ajax-throbber {
-      position: fixed;
-      top: 49%;
-      left: 49%;
-      display: none;
-      z-index: 1100;
-    }
-    /* ]]> */
-  </style>
+  <link rel="stylesheet" type="text/css" href="../static/css/main.css"/>
 
   <link rel="stylesheet" type="text/css" href="../static/css/responsive.css"/>
 </head>
@@ -79,7 +21,7 @@
 </div>
 
 <div id="ajax-throbber">
-  <img src="../static/img/ajax-loader.gif" />
+  <img src="../static/img/ajax-loader.gif"/>
 </div>
 
 <script type="text/javascript" src="../static/js/helpers.js"></script>
@@ -90,19 +32,19 @@
 
 <script type="text/javascript">
   /* <![CDATA[ */
-  var KEY_GUIDE = 'guide';
-  var KEY_ITEMS = 'items';
-  var KEY_CONTENT = 'content';
-  var KEY_CAPTION = 'caption';
-  var KEY_TYPE = 'type';
-  var KEY_MEDIA_ITEM = 'media_item_uuid';
-
   /**
    * Filter through the json string / data that we get into only the valid steps with image
    * @param data the json string
    * @returns {Array} of valid guides with image
    */
   function getGuides(data) {
+    var KEY_GUIDE = 'guide';
+    var KEY_ITEMS = 'items';
+    var KEY_CONTENT = 'content';
+    var KEY_CAPTION = 'caption';
+    var KEY_TYPE = 'type';
+    var KEY_MEDIA_ITEM = 'media_item_uuid';
+    
     var validDataWithImg = [];
 
     // find all valid data with images in it (steps)
@@ -171,7 +113,48 @@
       var controller = new GuideController(models, thumbnailsView, guideStepView);
       controller.initWithThumbnailsView();
 
-    } catch(e) {
+      // bind help keys
+      document.onkeydown = function (evt) {
+
+        switch (evt.keyCode) {
+          case KEY_CODE.ENTER:
+            // open selected guide
+            if (!guideStepView.isOpen()) {
+              controller.loadImageStep(controller.getCurrentGuide());
+            }  
+            break;
+          case KEY_CODE.ESC:
+            if (guideStepView.isOpen()) {
+              // close current guide
+              guideStepView.close(true);
+            } else {
+              // clear selected and reset selected index
+              controller.reset();
+            }
+            break;
+          case KEY_CODE.LEFT_ARROW:
+            if (guideStepView.isOpen()) {
+              // go to prev guide if guide step view is open
+              controller.displayPrevStep();
+            } else {
+              // go to prev guide on thumbnail view
+              controller.toPrevThumbnail();
+            }
+            break;
+          case KEY_CODE.RIGHT_ARROW:
+            if (guideStepView.isOpen()) {
+              // go to next guide if guide step view is open
+              controller.displayNextStep();
+            } else {
+              // go to next guide on thumbnail
+              controller.toNextThumbnail();
+            }
+            break;
+        }
+
+      };
+
+    } catch (e) {
       if (console) console.error(e);
       document.getElementById('content').innerHTML = '<div>Boo hoo! Failed!</div>';
     }
@@ -180,20 +163,10 @@
   /**
    * ===== START HERE =====
    */
-  addEventOnLoad(window, function() {
-    /**
-     * Close the current guide view on Esc key
-     */
-    document.onkeydown = function (evt) {
-      if (evt.keyCode == 27) {
-        // close current guide
-        closeCurrentGuide(true);
-      }
-    };
-
+  addEventOnLoad(window, function () {
     // get our data
     // change guide id if you need to
-    XMLHttp.get('http://localhost:5000/get_guide/b995492d5e7943e3b2757a88fe3ef7c6', function(data) {
+    XMLHttp.get('http://localhost:5000/get_guide/b995492d5e7943e3b2757a88fe3ef7c6', function (data) {
       init(data);
     });
   });

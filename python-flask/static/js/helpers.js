@@ -21,7 +21,7 @@ var IMG_QUALITY = {
 var CLASS_NAME = {
   BACKLAYER: 'transparent-back-layer',
   IMG_THUMBNAIL: 'img-thumbnail',
-  BIG_IMG_CONTAINER: 'big-img-container',
+  GUIDE_STEP_VIEW_CONTAINER: 'guide-step-view-container',
   LEFT_NAV_ARROW: 'left-nav-arrow',
   RIGHT_NAV_ARROW: 'right-nav-arrow',
   SELECTED_THUMBNAIL: 'selected-thumbnail',
@@ -35,6 +35,13 @@ var TEMPLATE = {
 var DISPLAY_STYLE = {
   NONE: 'none',
   BLOCK: 'block'
+};
+
+var KEY_CODE = {
+  ENTER: 13,
+  ESC: 27,
+  LEFT_ARROW: 37,
+  RIGHT_ARROW: 39
 };
 
 var XMLHttp = {
@@ -215,11 +222,6 @@ window.W = window.W || function(e) {
   return new DOMWrapper(e);
 };
 
-
-
-
-
-
 /**
  * Add transparent back layer, like modal backdrop
  */
@@ -233,26 +235,6 @@ function addTransparentBackLayer() {
  */
 function removeTransparentBackLayer() {
   W(document.getElementsByClassName(CLASS_NAME.BACKLAYER)).removeElem();
-}
-
-/**
- * Close the current guide view
- * @param withAnimation true or false
- */
-function closeCurrentGuide(withAnimation) {
-  var guides = document.getElementsByClassName(CLASS_NAME.BIG_IMG_CONTAINER);
-  if (guides.length > 0) {
-    if (withAnimation) {
-      W(guides[0]).addClass(CLASS_NAME.GONE_LEFT_RIGHT);
-      setTimeout(function() {
-        W(CLASS_NAME.BIG_IMG_CONTAINER).removeElem();
-        removeTransparentBackLayer();
-      }, 750);
-    } else {
-      W(CLASS_NAME.BIG_IMG_CONTAINER).removeElem();
-      removeTransparentBackLayer();
-    }
-  }
 }
 
 /**
@@ -271,6 +253,7 @@ function hideThrobber() {
 
 /**
  * Clear the `selected` guide class from thumbnail (you know, the selected effect)
+ * Remove it by finding the element with `selected-thumbnail` class
  */
 function clearSelectedGuide() {
   var e = document.getElementsByClassName(CLASS_NAME.SELECTED_THUMBNAIL);

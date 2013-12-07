@@ -1,0 +1,87 @@
+#gallery-title {
+  color: gray;
+  text-decoration: none;
+}
+
+#gallery-title:hover {
+  color: #0099cc;
+}
+
+.guide-step-view-container {
+  position: absolute;
+  top: 50px;
+  left: 30%;
+  z-index: 1050;
+}
+
+img.img-thumbnail {
+  cursor: pointer;
+  padding: 3px;
+}
+
+.selected-thumbnail {
+  border: 3px solid #0099cc;
+  margin-bottom: 7px;
+}
+
+.img-placeholder {
+  width: 60px;
+  height: 60px;
+  padding: 3px;
+  display: none;
+}
+
+.guide-step-view-container > .big-img {
+  padding-left: 25px;
+  vertical-align: middle;
+  padding-right: 25px;
+}
+
+.guide-step-view-container .left-nav-arrow,
+.guide-step-view-container .right-nav-arrow {
+  color: lavender;
+}
+
+.guide-step-view-container .left-nav-arrow:hover,
+.guide-step-view-container .right-nav-arrow:hover {
+  color: #0099cc;
+}
+
+.guide-step-view-container .close-btn {
+  float: right;
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #AEAEAE;
+  border-radius: 30px;
+  background: #605F61;
+  font-size: 27px;
+  display: inline-block;
+  line-height: 0px;
+  padding: 11px 3px;
+  text-decoration: none;
+}
+
+.guide-step-view-container .close-btn:hover {
+  /*color: #33b5e5;*/
+  color: #0099cc;
+  /*color: #00ddff;*/
+}
+
+.transparent-back-layer {
+  background-color: #000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  opacity: 0.8;
+}
+
+#ajax-throbber {
+  position: fixed;
+  top: 49%;
+  left: 49%;
+  display: none;
+  z-index: 1100;
+}

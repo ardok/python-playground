@@ -31,6 +31,6 @@ Guide step close animation
   }
 }
 
-.big-img-container.goneLeftRight {
+.guide-step-view-container.goneLeftRight {
   -webkit-animation: goneLeftRight 0.75s linear;
 }
