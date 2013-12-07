@@ -23,7 +23,8 @@
   .big-img-container .big-img {
     float: left;
     clear: both;
-    padding-left: 15px;
+    padding-left: 1px;
+    padding-right: 1px;
   }
 
   .big-img-container .right-nav-container {
