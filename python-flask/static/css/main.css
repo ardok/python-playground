@@ -1,3 +1,12 @@
+#gallery-title {
+  color: gray;
+  text-decoration: none;
+}
+
+#gallery-title:hover {
+  color: #0099cc;
+}
+
 .guide-step-view-container {
   position: absolute;
   top: 50px;
@@ -11,7 +20,7 @@ img.img-thumbnail {
 }
 
 .selected-thumbnail {
-  border: 3px solid blue;
+  border: 3px solid #0099cc;
   margin-bottom: 7px;
 }
 
@@ -33,11 +42,29 @@ img.img-thumbnail {
   color: lavender;
 }
 
+.guide-step-view-container .left-nav-arrow:hover,
+.guide-step-view-container .right-nav-arrow:hover {
+  color: #0099cc;
+}
+
 .guide-step-view-container .close-btn {
-  color: lavender;
-  position: absolute;
-  top: 0;
-  right: 0;
+  float: right;
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #AEAEAE;
+  border-radius: 30px;
+  background: #605F61;
+  font-size: 27px;
+  display: inline-block;
+  line-height: 0px;
+  padding: 11px 3px;
+  text-decoration: none;
+}
+
+.guide-step-view-container .close-btn:hover {
+  /*color: #33b5e5;*/
+  color: #0099cc;
+  /*color: #00ddff;*/
 }
 
 .transparent-back-layer {

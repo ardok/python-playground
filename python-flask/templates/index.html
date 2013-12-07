@@ -32,19 +32,19 @@
 
 <script type="text/javascript">
   /* <![CDATA[ */
-  var KEY_GUIDE = 'guide';
-  var KEY_ITEMS = 'items';
-  var KEY_CONTENT = 'content';
-  var KEY_CAPTION = 'caption';
-  var KEY_TYPE = 'type';
-  var KEY_MEDIA_ITEM = 'media_item_uuid';
-
   /**
    * Filter through the json string / data that we get into only the valid steps with image
    * @param data the json string
    * @returns {Array} of valid guides with image
    */
   function getGuides(data) {
+    var KEY_GUIDE = 'guide';
+    var KEY_ITEMS = 'items';
+    var KEY_CONTENT = 'content';
+    var KEY_CAPTION = 'caption';
+    var KEY_TYPE = 'type';
+    var KEY_MEDIA_ITEM = 'media_item_uuid';
+    
     var validDataWithImg = [];
 
     // find all valid data with images in it (steps)
@@ -124,8 +124,13 @@
             }  
             break;
           case KEY_CODE.ESC:
-            // close current guide
-            guideStepView.close(true);
+            if (guideStepView.isOpen()) {
+              // close current guide
+              guideStepView.close(true);
+            } else {
+              // clear selected and reset selected index
+              controller.reset();
+            }
             break;
           case KEY_CODE.LEFT_ARROW:
             if (guideStepView.isOpen()) {

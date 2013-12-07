@@ -16,6 +16,14 @@ function GuideController(guides, thumbnailsView, stepView) {
 
 GuideController.prototype = {
   /**
+   * Clear selected and set current index to -1
+   */
+  reset: function() {
+    clearSelectedGuide();
+    this.currentGuideIndex = -1;
+  },
+  
+  /**
    * Initialize our thumbnails view
    * Will make http request to get the images to show
    */
@@ -221,9 +229,12 @@ GuideController.prototype = {
    * Method to go to the previous step in thumbnail
    */
   toPrevThumbnail: function() {
-    if (!this.stepView.isOpen() &&
-        this.currentGuideIndex > 0) {
-      this.currentGuideIndex--;
+    if (!this.stepView.isOpen()) {
+      if (this.currentGuideIndex > 0) {
+        this.currentGuideIndex--;
+      } else {
+        this.currentGuideIndex = this.guides.length - 1;
+      }
       this.pingRedrawSelected();
     }
   },
@@ -232,9 +243,12 @@ GuideController.prototype = {
    * Method to go to the next step in thumbnail
    */
   toNextThumbnail: function() {
-    if (!this.stepView.isOpen() &&
-        this.currentGuideIndex < this.guides.length) {
-      this.currentGuideIndex++;
+    if (!this.stepView.isOpen()) {
+      if (this.currentGuideIndex < this.guides.length - 1) {
+        this.currentGuideIndex++;
+      } else {
+        this.currentGuideIndex = 0;
+      }
       this.pingRedrawSelected();
     }
   }
