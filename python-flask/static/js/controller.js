@@ -61,6 +61,15 @@ GuideController.prototype = {
             XMLHttp.get('http://localhost:5000/get_image/' + curElem.mediaId + '?q=' + IMG_QUALITY.SMALL, 
                 function(data) {
                   _this.thumbnailsView.draw(img, data, curElem);
+
+                  $(img).mouseover(function() {
+                    if (curElem.stepImgBinaryData == null) {
+                      XMLHttp.get('http://localhost:5000/get_image/' + curElem.mediaId + '?q=' + IMG_QUALITY.STEP, function(bigData) {
+                          curElem.stepImgBinaryData = bigData;
+                      });
+                    }
+                  });
+
                   img.onclick = function() {
                     /**
                      * On click, show the big image step
@@ -68,6 +77,9 @@ GuideController.prototype = {
                     _this.setCurrentIndex(curElem.arrayIndex);
                     _this.loadImageStep(curElem);
                   };
+
+
+
                 });
 
           }
